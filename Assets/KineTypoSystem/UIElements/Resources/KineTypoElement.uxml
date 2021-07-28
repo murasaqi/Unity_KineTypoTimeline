@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <uie:PropertyField name="TextAssetField" binding-path="text" />
+    <uie:PropertyField name="FontSizeField" binding-path="fontSize" style="align-items: stretch; justify-content: space-around;" />
+    <uie:PropertyField name="TextMaterialTypeField" binding-path="textMaterialType" />
+    <uie:PropertyField name="FontAssetField" binding-path="tmpFontAsset" />
+    <uie:PropertyField name="AnimationClipField" binding-path="animationClip" />
+    <ui:VisualElement style="align-items: center; width: auto; margin-left: 3px; margin-right: 3px; margin-top: 6px; margin-bottom: 6px;">
+        <ui:Button text="Apply" display-tooltip-when-elided="true" name="ReGenerateButton" />
+    </ui:VisualElement>
+</ui:UXML>

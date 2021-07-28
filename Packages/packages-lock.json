@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.murasaqi": {
+      "version": "https://github.com/murasaqi/Unity_AnimationClipTransferTimeline.git?path=Assets/AnimationClipTransfer#f0.0.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d8f053dc4ab8652f5a44971ab9525ffe379e3fad"
+    },
     "com.unity.cinemachine": {
       "version": "2.7.3",
       "depth": 0,
