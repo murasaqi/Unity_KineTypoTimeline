@@ -19,6 +19,7 @@ namespace KineTypoSystem
         [HideInInspector] [SerializeField] private AnimationClipTransfer animationClipTransfer;
         [SerializeField] private List<TextMeshPro> textMeshPros;
         [SerializeField] private List<GameObject> cloneTextMesh;
+        [SerializeField] private TextAlignmentOptions textAlignmentOptions;
         
         // Start is called before the first frame update
         void Start() { }
@@ -45,14 +46,15 @@ namespace KineTypoSystem
             
             if (textMaterialType == TextMaterialType.SDFTexture)
             { 
-                cloneTextMesh = KineTypoCreator.CreateCloneTextMesh(text, tmpFontAsset, fontSize, fontStyle);
+                cloneTextMesh = KineTypoCreator.CreateCloneTextMesh(text, tmpFontAsset, fontSize, textAlignmentOptions, fontStyle);
 
                 foreach (var clone in cloneTextMesh)
                 {
                     clone.transform.SetParent(transform,false);
+                    clone.layer = gameObject.layer;
                     // var textVertexMorpher = clone.AddComponent<TextMeshVertexMorpher>();
-                    
-                 
+
+
                 }
 
             }
@@ -62,6 +64,7 @@ namespace KineTypoSystem
                 {
                     Debug.Log(textMeshPro);
                     textMeshPro.transform.SetParent(transform,false);
+                    textMeshPro.gameObject.layer = gameObject.layer;
                 }
             }
             

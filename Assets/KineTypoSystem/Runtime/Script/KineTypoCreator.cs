@@ -76,16 +76,16 @@ namespace KineTypoSystem
                 t.transform.localPosition -= diff;
             }
         }
-        public static List<TextMeshPro> CreateTextMeshList(string word, TMP_FontAsset font, int fontSize)
+        public static List<TextMeshPro> CreateTextMeshList(string word, TMP_FontAsset font, int fontSize, TextAlignmentOptions textAlignmentOptions)
         {
 
             List<TextMeshPro> texts = new List<TextMeshPro>();
 
-            var originalMesh = CreateTextMesh(word, font, fontSize).meshFilter.sharedMesh;
+            var originalMesh = CreateTextMesh(word, font, fontSize, textAlignmentOptions).meshFilter.sharedMesh;
             // var count = 0;
             foreach (var ch in word)
             {
-                var textMesh = CreateTextMesh(ch.ToString(),font, fontSize);
+                var textMesh = CreateTextMesh(ch.ToString(),font, fontSize,textAlignmentOptions);
                 textMesh.name = "text: " + ch;
                 textMesh.fontSize = fontSize;
                 textMesh.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
@@ -100,11 +100,11 @@ namespace KineTypoSystem
         }
 
 
-        public static List<GameObject> CreateCloneTextMesh(string text, TMP_FontAsset fontAsset, int fontSize =12, FontStyles fontStyle = FontStyles.Normal)
+        public static List<GameObject> CreateCloneTextMesh(string text, TMP_FontAsset fontAsset, int fontSize, TextAlignmentOptions textAlignmentOptions, FontStyles fontStyle = FontStyles.Normal)
         {
 
 
-            var textMeshPro = CreateTextMesh(text,fontAsset,fontSize, fontStyle);
+            var textMeshPro = CreateTextMesh(text,fontAsset,fontSize,textAlignmentOptions, fontStyle);
             var clones = new List<GameObject>();
             
             Debug.Log(textMeshPro.text);
@@ -165,21 +165,20 @@ namespace KineTypoSystem
             return clones;
 
         }
-        public static TextMeshPro CreateTextMesh(string character, TMP_FontAsset font, float fontSize,FontStyles fontStyle = FontStyles.Normal)
+        public static TextMeshPro CreateTextMesh(string character, TMP_FontAsset font, float fontSize,TextAlignmentOptions textAlignmentOptions, FontStyles fontStyle = FontStyles.Normal)
         {
             var tmPro = new GameObject().AddComponent<TextMeshPro>();
             tmPro.font = font;
-            tmPro.UpdateFontAsset();
+            tmPro.alignment = textAlignmentOptions;
             tmPro.text = character;
-            tmPro.alignment = TextAlignmentOptions.CenterGeoAligned;
             tmPro.fontSize = fontSize;
             tmPro.fontStyle = fontStyle;
             tmPro.enableWordWrapping = false;
-            tmPro.alignment = TextAlignmentOptions.Center;
             tmPro.name = character;
             tmPro.transform.localEulerAngles = Vector3.zero;
             tmPro.transform.localPosition = Vector3.zero;
             tmPro.transform.localScale = Vector3.one;
+            tmPro.UpdateFontAsset();
             tmPro.ForceMeshUpdate();
             // Debug.Log(tmPro.meshFilter.sharedMesh.vertices.Length);
             return tmPro;
