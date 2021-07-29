@@ -1,0 +1,9 @@
+{
+    "name": "com.murasaqi",
+    "displayName": "KineTypoSystem",
+    "version": "0.0.1",              
+    "unity": "2020.3",
+    "description": "Kinetic Typography system.",
+    "dependencies": {
+    }
+}
