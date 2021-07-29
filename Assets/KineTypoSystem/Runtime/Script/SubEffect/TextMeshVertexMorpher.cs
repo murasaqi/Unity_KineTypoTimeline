@@ -38,7 +38,7 @@ public class TextMeshVertexMorpher : MonoBehaviour
         mesh = GetComponent<MeshFilter>().sharedMesh;
         
         
-        var count = 0;
+        // var count = 0;
         vertices.Clear();
         initialVertices.Clear();
         foreach (var v in mesh.vertices)
@@ -49,14 +49,19 @@ public class TextMeshVertexMorpher : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        if(mesh != null)mesh.SetVertices(initialVertices);
+    }
+
     private void OnDestroy()
     {
-        mesh.SetVertices(initialVertices);
+        Reset();
     }
 
     private void OnDisable()
     {
-        mesh.SetVertices(initialVertices);
+        Reset();
     }
     
     // Update is called once per frame

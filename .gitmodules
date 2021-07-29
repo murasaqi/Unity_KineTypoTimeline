@@ -1,0 +1,3 @@
+[submodule "Submodules/Unity_AnimationClipTransferTimeline"]
+	path = Submodules/Unity_AnimationClipTransferTimeline
+	url = https://github.com/murasaqi/Unity_AnimationClipTransferTimeline

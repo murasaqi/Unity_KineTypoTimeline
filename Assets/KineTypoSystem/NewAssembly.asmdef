@@ -1,0 +1,17 @@
+{
+    "name": "KineTypoSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:523eecbe7019dbf4289eda125dd4385f",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -156,8 +156,7 @@ namespace KineTypoSystem
                 // child.transform.localPosition = textMesh.transform.localPosition;
                 // child.transform.localScale = textMesh.transform.localScale;
                 // child.transform.rotation = textMesh.transform.rotation;
-
-                child.AddComponent<TextMeshVertexMorpher>();
+                
                 clones.Add(child);
 
             }

@@ -50,6 +50,9 @@ namespace KineTypoSystem
                 foreach (var clone in cloneTextMesh)
                 {
                     clone.transform.SetParent(transform,false);
+                    // var textVertexMorpher = clone.AddComponent<TextMeshVertexMorpher>();
+                    
+                 
                 }
 
             }
@@ -65,6 +68,15 @@ namespace KineTypoSystem
             InitAnimationComponents(animationClip);
             
             animationClipTransfer.Init();
+            
+            foreach (var clone in cloneTextMesh)
+            {
+                clone.transform.SetParent(transform,false);
+                var textVertexMorpher = clone.AddComponent<TextMeshVertexMorpher>();
+                animationClipTransfer.OnInitHandler += textVertexMorpher.Init;
+                animationClipTransfer.OnResetChildTransformHandler += textVertexMorpher.Reset;
+
+            }
         }
 
         public void UpdateFontAsset()
