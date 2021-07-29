@@ -82,7 +82,7 @@ namespace KineTypoSystem
             List<TextMeshPro> texts = new List<TextMeshPro>();
 
             var originalMesh = CreateTextMesh(word, font, fontSize).meshFilter.sharedMesh;
-            var count = 0;
+            // var count = 0;
             foreach (var ch in word)
             {
                 var textMesh = CreateTextMesh(ch.ToString(),font, fontSize);
