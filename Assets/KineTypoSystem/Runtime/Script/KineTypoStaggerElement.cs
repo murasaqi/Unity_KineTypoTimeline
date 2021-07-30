@@ -97,6 +97,12 @@ namespace KineTypoSystem
             KineTypoCreator.AdjustCharacterPosition(textMeshPros);
         }
 
+        public void Regenarate(string text)
+        {
+            this.text = text:
+            Regenarate();
+        }
+
         public void Regenerate()
         {
             if(text.Length == 0 || animationClip == null || tmpFontAsset == null) return;
