@@ -108,9 +108,10 @@ namespace KineTypoSystem
             var clones = new List<GameObject>();
             
             Debug.Log(textMeshPro.text);
+            var characterCount = 0;
             // var count = 0;
             var originalMesh = textMeshPro.meshFilter.sharedMesh;
-            for (int characterCount = 0; characterCount < textMeshPro.text.Length; characterCount++)
+            for (int verticesCount = 0; verticesCount < originalMesh.vertexCount; verticesCount+=4)
             {
                 Debug.Log(textMeshPro.text[characterCount]);
                 var initialVertices = new List<Vector3>();
@@ -125,39 +126,28 @@ namespace KineTypoSystem
                 {
                     var num = characterCount * 4 + vCount;
                     var v = originalMesh.vertices[num];
-                    // Debug.Log(v);
-                    // centerPos += v;
                     initialVertices.Add(new Vector3(v.x,v.y,v.z));
                     initialUvs.Add(originalUvs[num]);
                 }
-
-           
+                
                 var child = new GameObject();
                 child.name = textMeshPro.name[characterCount].ToString();
-                // child.transform.SetParent(transform);
-                // child.transform.position = centerPos;
                 var childMeshRenderer = child.AddComponent<MeshRenderer>();
                 var childMesh = new Mesh();
                 childMesh.SetVertices(initialVertices);
-
                 
-                // mesh.GetIndices(indices, 0);
                 childMesh.SetIndices(initialIndices,originalMesh.GetTopology(0),0,true);
                 childMesh.SetUVs(0,initialUvs);
                 childMesh.RecalculateNormals();
-                
-        
+
                 var meshFilter = child.AddComponent<MeshFilter>();
                 meshFilter.sharedMesh = childMesh;
                 // Debug.Log(childMeshRenderer);
                 childMeshRenderer.sharedMaterial = new Material(textMeshPro.fontSharedMaterial);
                 childMeshRenderer.sharedMaterial.CopyPropertiesFromMaterial(textMeshPro.fontSharedMaterial);
 
-                // child.transform.localPosition = textMesh.transform.localPosition;
-                // child.transform.localScale = textMesh.transform.localScale;
-                // child.transform.rotation = textMesh.transform.rotation;
-                
                 clones.Add(child);
+                characterCount++;
 
             }
 
