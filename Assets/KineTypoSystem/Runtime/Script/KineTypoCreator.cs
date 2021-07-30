@@ -113,7 +113,8 @@ namespace KineTypoSystem
             var originalMesh = textMeshPro.meshFilter.sharedMesh;
             for (int verticesCount = 0; verticesCount < originalMesh.vertexCount; verticesCount+=4)
             {
-                Debug.Log(textMeshPro.text[characterCount]);
+                if (text.Length <= characterCount) break;
+                // Debug.Log(textMeshPro.text[characterCount]);
                 var initialVertices = new List<Vector3>();
                 var initialIndices = new List<int>{0,1,2,2,3,0};
                 var initialUvs = new List<Vector2>();
@@ -131,7 +132,7 @@ namespace KineTypoSystem
                 }
                 
                 var child = new GameObject();
-                child.name = textMeshPro.name[characterCount].ToString();
+                child.name = text[characterCount].ToString();
                 var childMeshRenderer = child.AddComponent<MeshRenderer>();
                 var childMesh = new Mesh();
                 childMesh.SetVertices(initialVertices);

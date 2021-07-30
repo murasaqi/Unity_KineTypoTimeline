@@ -20,6 +20,13 @@ namespace KineTypoSystem
         [SerializeField] private List<TextMeshPro> textMeshPros;
         [SerializeField] private List<GameObject> cloneTextMesh;
         [SerializeField] private TextAlignmentOptions textAlignmentOptions;
+
+
+        public string Text
+        {
+            get => text;
+            set => text = value;
+        }
         
         // Start is called before the first frame update
         void Start() { }
@@ -101,6 +108,12 @@ namespace KineTypoSystem
         {
             this.text = newText;
             Regenerate();
+        }
+
+        public void Play(string newText)
+        {
+            GenerateText(newText);
+            GetComponent<Animation>().Play();
         }
 
         public void Regenerate()
