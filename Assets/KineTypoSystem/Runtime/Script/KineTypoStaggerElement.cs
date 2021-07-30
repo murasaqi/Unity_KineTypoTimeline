@@ -97,10 +97,10 @@ namespace KineTypoSystem
             KineTypoCreator.AdjustCharacterPosition(textMeshPros);
         }
 
-        public void Regenarate(string text)
+        public void GenerateText(string newText)
         {
-            this.text = text:
-            Regenarate();
+            this.text = newText;
+            Regenerate();
         }
 
         public void Regenerate()
