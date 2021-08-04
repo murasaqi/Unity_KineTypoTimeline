@@ -117,18 +117,22 @@ namespace KineTypoSystem
                 // Debug.Log(textMeshPro.text[characterCount]);
                 var initialVertices = new List<Vector3>();
                 var initialIndices = new List<int>{0,1,2,2,3,0};
-                var initialUvs = new List<Vector2>();
-                // var centerPos = Vector3.zero;
+                var initialUvs00 = new List<Vector2>();
+                var initialUvs01 = new List<Vector2>();
 
-                var originalUvs = new List<Vector2>();
+                var originalUvs00 = new List<Vector2>();
+                var originalUvs01 = new List<Vector2>();
                 
-                originalMesh.GetUVs(0, originalUvs);
+                originalMesh.GetUVs(0, originalUvs00);
+                originalMesh.GetUVs(1, originalUvs01);
+                
                 for (int vCount = 0; vCount < 4; vCount++)
                 {
                     var num = characterCount * 4 + vCount;
                     var v = originalMesh.vertices[num];
                     initialVertices.Add(new Vector3(v.x,v.y,v.z));
-                    initialUvs.Add(originalUvs[num]);
+                    initialUvs00.Add(originalUvs00[num]);
+                    initialUvs01.Add(originalUvs01[num]);
                 }
                 
                 var child = new GameObject();
@@ -138,7 +142,8 @@ namespace KineTypoSystem
                 childMesh.SetVertices(initialVertices);
                 
                 childMesh.SetIndices(initialIndices,originalMesh.GetTopology(0),0,true);
-                childMesh.SetUVs(0,initialUvs);
+                childMesh.SetUVs(0,initialUvs00);
+                childMesh.SetUVs(1,initialUvs01);
                 childMesh.RecalculateNormals();
 
                 var meshFilter = child.AddComponent<MeshFilter>();
