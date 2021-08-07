@@ -1,33 +1,39 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UMotionGraphicUtilities;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace KineTypoSystem
 {
     public class KineTypoStaggerElement : MonoBehaviour
     {
 
-        [HideInInspector] [SerializeField] private string text;
+        [HideInInspector] [SerializeField] [TextArea(1,3)]private string text;
         [HideInInspector] [SerializeField] private int fontSize = 12;
         [HideInInspector] [SerializeField] private TMP_FontAsset tmpFontAsset;
         [SerializeField] private FontStyles fontStyle;
+        [SerializeField] private float characterSpacing = 0;
+        [SerializeField] private float lineSpacing = 0;
         [HideInInspector] [SerializeField] private AnimationClip animationClip;
         [HideInInspector] [SerializeField] private TextMaterialType textMaterialType = TextMaterialType.SDFTexture;
         [HideInInspector] [SerializeField] private AnimationClipTransfer animationClipTransfer;
         [SerializeField] private List<TextMeshPro> textMeshPros;
-        [SerializeField] private List<GameObject> cloneTextMesh;
+        [SerializeField] private List<CloneTextMesh> cloneTextMesh;
         [SerializeField] private TextAlignmentOptions textAlignmentOptions;
+        [SerializeField] private Rect _rect = new Rect();
 
 
+        public Rect rect => _rect;
         public string Text
         {
             get => text;
             set => text = value;
         }
-        
+
         // Start is called before the first frame update
         void Start() { }
         private void InitAnimationComponents(AnimationClip animationClip)
@@ -46,23 +52,43 @@ namespace KineTypoSystem
         }
         public void Init( string text, TMP_FontAsset tmpFontAsset, AnimationClip animationClip)
         {
-            cloneTextMesh = new List<GameObject>();
+            cloneTextMesh = new List<CloneTextMesh>();
             textMeshPros = new List<TextMeshPro>();
             this.tmpFontAsset = tmpFontAsset;
             this.text = text;
             
             if (textMaterialType == TextMaterialType.SDFTexture)
             { 
-                cloneTextMesh = KineTypoCreator.CreateCloneTextMesh(text, tmpFontAsset, fontSize, textAlignmentOptions, fontStyle);
-
+                cloneTextMesh = KineTypoCreator.CreateCloneTextMesh(transform,text, tmpFontAsset, fontSize, textAlignmentOptions, fontStyle, characterSpacing,lineSpacing);
+                var startX = cloneTextMesh.First().rect.position.x - cloneTextMesh.First().rect.width / 2f;
+                var startY = cloneTextMesh.First().rect.position.y + cloneTextMesh.First().rect.height / 2f;
+                var lastX = 0f;
+                var lastY = 0f;
                 foreach (var clone in cloneTextMesh)
                 {
                     clone.transform.SetParent(transform,false);
-                    clone.layer = gameObject.layer;
-                    // var textVertexMorpher = clone.AddComponent<TextMeshVertexMorpher>();
+                    clone.gameObject.layer = gameObject.layer;
 
+                    var lastVertexX = clone.rect.position.x + clone.rect.width / 2f;
+                    var lastVertexY = clone.rect.position.y - clone.rect.height / 2f;
+                    if (lastX < lastVertexX)
+                    {
+                        lastX = lastVertexX;
+                    }
+
+                    if (lastY > lastVertexY)
+                    {
+                        lastY = lastVertexY;
+                    }
 
                 }
+                
+                _rect.Set(
+                    (startX + lastX)/2f,
+                    (startY + lastY)/2f,
+                    lastX - startX,
+                    lastY - startY
+                );
 
             }
             if (textMaterialType == TextMaterialType.TextMeshProOriginal)
@@ -82,7 +108,7 @@ namespace KineTypoSystem
             foreach (var clone in cloneTextMesh)
             {
                 clone.transform.SetParent(transform,false);
-                var textVertexMorpher = clone.AddComponent<TextMeshVertexMorpher>();
+                var textVertexMorpher = clone.gameObject.AddComponent<TextMeshVertexMorpher>();
                 animationClipTransfer.OnInitHandler += textVertexMorpher.Init;
                 animationClipTransfer.OnResetChildTransformHandler += textVertexMorpher.Reset;
 
@@ -122,12 +148,12 @@ namespace KineTypoSystem
             DestroyImmediate(animationClipTransfer);
             foreach (var t in textMeshPros)
             {
-                DestroyImmediate(t.gameObject);
+                if(t != null)DestroyImmediate(t.gameObject);
             }
             
             foreach (var t in cloneTextMesh)
             {
-                DestroyImmediate(t);
+                if(t != null)DestroyImmediate(t.gameObject);
             }
             textMeshPros.Clear();
             cloneTextMesh.Clear();
@@ -145,5 +171,35 @@ namespace KineTypoSystem
         }
         // Update is called once per frame
         void Update() { }
+        
+#if UNITY_EDITOR
+        void OnDrawGizmos()
+        {
+            // Draw a yellow sphere at the transform's position
+            // var count = 0;
+            // var drawRect = new Rect();
+            // // var pos = transform.TransformPoint(new Vector3(
+            // //     cloneTextMesh.First().rect.position.x,
+            // // cloneTextMesh.First().rect.position.y,
+            // //     transform.localPosition.z
+            // //     ));
+            // drawRect.position = new Vector2(
+            //     cloneTextMesh.First().rect.position.x,
+            //     cloneTextMesh.First().rect.position.y
+            //     );
+            //
+            // drawRect.width = _rect.width * transform.lossyScale.x;
+            // drawRect.height = _rect.height * transform.lossyScale.y;
+            //
+            // UnityEditor.Handles.DrawSolidRectangleWithOutline(drawRect,Color.blue, Color.white);
+            // foreach(var v in _rect)
+            // {
+            //     UnityEditor.Handles.color = Color.white;
+            //     UnityEditor.Handles.Label( v+transform.position, count.ToString() );
+            //     count++;
+            //
+            // }
+        }
+#endif
     }
 }

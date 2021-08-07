@@ -63,68 +63,77 @@ public class TMPVertexDebugger : MonoBehaviour
     {
         var textMeshPro = GetComponent<TextMeshPro>();
         var text = textMeshPro.text;
-            Debug.Log(textMeshPro.text);
-            var characterCount = 0;
-            // var count = 0;
-            var originalMesh = textMeshPro.meshFilter.sharedMesh;
+        Debug.Log(textMeshPro.text);
+
+
+        var clone = new GameObject(text);
+        var cloneMeshRenderer = clone.AddComponent<MeshRenderer>();
+        cloneMeshRenderer.material = new Material(textMeshPro.fontSharedMaterial);
+        var cloneMeshFilter = clone.AddComponent<MeshFilter>();
+        cloneMeshFilter.sharedMesh = Instantiate(textMeshPro.meshFilter.sharedMesh);
+        
+        clone.transform.SetParent(transform,false);
+        var characterCount = 0;
+        // var count = 0;
+        var originalMesh = textMeshPro.meshFilter.sharedMesh;
 
 
 
-            var uv2s = new List<Vector2>();
-            originalMesh.GetUVs(1, uv2s);
-            Debug.Log(uv2s.Count);
-          
-            
-            for (int verticesCount = 0; verticesCount < originalMesh.vertexCount; verticesCount+=4)
+        var uv2s = new List<Vector2>();
+        originalMesh.GetUVs(1, uv2s);
+        Debug.Log(uv2s.Count);
+      
+        
+        for (int verticesCount = 0; verticesCount < originalMesh.vertexCount; verticesCount+=4)
+        {
+            if (text.Length <= characterCount) break;
+            // Debug.Log(textMeshPro.text[characterCount]);
+            var initialVertices = new List<Vector3>();
+            var initialIndices = new List<int>{0,1,2,2,3,0};
+            var initialUvs00 = new List<Vector2>();
+            var initialUvs01 = new List<Vector2>();
+            // var initialColor = new List<Color>();
+            // var centerPos = Vector3.zero;
+        
+            var originalUvs00 = new List<Vector2>();
+            var originalUvs01 = new List<Vector2>();
+            originalMesh.GetUVs(0, originalUvs00);
+            originalMesh.GetUVs(1, originalUvs01);
+            for (int vCount = 0; vCount < 4; vCount++)
             {
-                if (text.Length <= characterCount) break;
-                // Debug.Log(textMeshPro.text[characterCount]);
-                var initialVertices = new List<Vector3>();
-                var initialIndices = new List<int>{0,1,2,2,3,0};
-                var initialUvs00 = new List<Vector2>();
-                var initialUvs01 = new List<Vector2>();
-                // var initialColor = new List<Color>();
-                // var centerPos = Vector3.zero;
-            
-                var originalUvs00 = new List<Vector2>();
-                var originalUvs01 = new List<Vector2>();
-                originalMesh.GetUVs(0, originalUvs00);
-                originalMesh.GetUVs(1, originalUvs01);
-                for (int vCount = 0; vCount < 4; vCount++)
-                {
-                    var num = characterCount * 4 + vCount;
-                    var v = originalMesh.vertices[num];
-                    initialVertices.Add(new Vector3(v.x,v.y,v.z));
-                    initialUvs00.Add(originalUvs00[num]);
-                    initialUvs01.Add(originalUvs01[num]);
-                }
-                
-                // originalMesh.GetColors(initialColor);
-                
-                var child = new GameObject();
-                child.name = text[characterCount].ToString();
-                var childMeshRenderer = child.AddComponent<MeshRenderer>();
-                var childMesh = new Mesh();
-                childMesh.SetVertices(initialVertices);
-                
-                childMesh.SetTriangles(initialIndices,0);
-                childMesh.SetUVs(0,initialUvs00);
-                childMesh.SetUVs(1,initialUvs01);
-                // childMesh.SetColors(initialColor);
-                // childMesh.attrib
-                childMesh.RecalculateNormals();
-                
-                
-                var meshFilter = child.AddComponent<MeshFilter>();
-                meshFilter.sharedMesh = childMesh;
-                // Debug.Log(childMeshRenderer);
-                childMeshRenderer.sharedMaterial = textMeshPro.fontSharedMaterial;
-                // childMeshRenderer.sharedMaterial.CopyPropertiesFromMaterial(textMeshPro.fontSharedMaterial);
-            
-                child.transform.SetParent(transform,false);
-                characterCount++;
-            
+                var num = characterCount * 4 + vCount;
+                var v = originalMesh.vertices[num];
+                initialVertices.Add(new Vector3(v.x,v.y,v.z));
+                initialUvs00.Add(originalUvs00[num]);
+                initialUvs01.Add(originalUvs01[num]);
             }
+            
+            // originalMesh.GetColors(initialColor);
+            
+            var child = new GameObject();
+            child.name = text[characterCount].ToString();
+            var childMeshRenderer = child.AddComponent<MeshRenderer>();
+            var childMesh = new Mesh();
+            childMesh.SetVertices(initialVertices);
+            
+            childMesh.SetTriangles(initialIndices,0);
+            childMesh.SetUVs(0,initialUvs00);
+            childMesh.SetUVs(1,initialUvs01);
+            // childMesh.SetColors(initialColor);
+            // childMesh.attrib
+            childMesh.RecalculateNormals();
+            
+            
+            var meshFilter = child.AddComponent<MeshFilter>();
+            meshFilter.sharedMesh = childMesh;
+            // Debug.Log(childMeshRenderer);
+            childMeshRenderer.sharedMaterial = textMeshPro.fontSharedMaterial;
+            // childMeshRenderer.sharedMaterial.CopyPropertiesFromMaterial(textMeshPro.fontSharedMaterial);
+        
+            child.transform.SetParent(transform,false);
+            characterCount++;
+        
+        }
 
     }
 #if UNITY_EDITOR

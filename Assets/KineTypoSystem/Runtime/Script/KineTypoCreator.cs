@@ -76,36 +76,44 @@ namespace KineTypoSystem
                 t.transform.localPosition -= diff;
             }
         }
-        public static List<TextMeshPro> CreateTextMeshList(string word, TMP_FontAsset font, int fontSize, TextAlignmentOptions textAlignmentOptions)
+        // public static List<TextMeshPro> CreateTextMeshList(string word, TMP_FontAsset font, int fontSize, TextAlignmentOptions textAlignmentOptions)
+        // {
+        //
+        //     List<TextMeshPro> texts = new List<TextMeshPro>();
+        //
+        //     var originalMesh = CreateTextMesh(word, font, fontSize, textAlignmentOptions).meshFilter.sharedMesh;
+        //     // var count = 0;
+        //     foreach (var ch in word)
+        //     {
+        //         var textMesh = CreateTextMesh(ch.ToString(),font, fontSize,textAlignmentOptions);
+        //         textMesh.name = "text: " + ch;
+        //         textMesh.fontSize = fontSize;
+        //         textMesh.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+        //         var renderer = textMesh.GetComponent<MeshRenderer>();
+        //         renderer.shadowCastingMode = ShadowCastingMode.Off;
+        //         renderer.allowOcclusionWhenDynamic = false;
+        //         texts.Add(textMesh);
+        //     }
+        //
+        //     AdjustCharacterPosition(texts);
+        //     return texts;
+        // }
+
+
+        public static List<CloneTextMesh> CreateCloneTextMesh(
+            Transform parent,
+            string text, 
+            TMP_FontAsset fontAsset, 
+            int fontSize, 
+            TextAlignmentOptions textAlignmentOptions, 
+            FontStyles fontStyle = FontStyles.Normal, 
+            float characterSpacing = 0f,
+            float lineSpacing = 0)
         {
 
-            List<TextMeshPro> texts = new List<TextMeshPro>();
 
-            var originalMesh = CreateTextMesh(word, font, fontSize, textAlignmentOptions).meshFilter.sharedMesh;
-            // var count = 0;
-            foreach (var ch in word)
-            {
-                var textMesh = CreateTextMesh(ch.ToString(),font, fontSize,textAlignmentOptions);
-                textMesh.name = "text: " + ch;
-                textMesh.fontSize = fontSize;
-                textMesh.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
-                var renderer = textMesh.GetComponent<MeshRenderer>();
-                renderer.shadowCastingMode = ShadowCastingMode.Off;
-                renderer.allowOcclusionWhenDynamic = false;
-                texts.Add(textMesh);
-            }
-
-            AdjustCharacterPosition(texts);
-            return texts;
-        }
-
-
-        public static List<GameObject> CreateCloneTextMesh(string text, TMP_FontAsset fontAsset, int fontSize, TextAlignmentOptions textAlignmentOptions, FontStyles fontStyle = FontStyles.Normal)
-        {
-
-
-            var textMeshPro = CreateTextMesh(text,fontAsset,fontSize,textAlignmentOptions, fontStyle);
-            var clones = new List<GameObject>();
+            var textMeshPro = CreateTextMesh(parent,text,fontAsset,fontSize,textAlignmentOptions, fontStyle,characterSpacing,lineSpacing);
+            var clones = new List<CloneTextMesh>();
             
             Debug.Log(textMeshPro.text);
             var characterCount = 0;
@@ -113,6 +121,7 @@ namespace KineTypoSystem
             var originalMesh = textMeshPro.meshFilter.sharedMesh;
             for (int verticesCount = 0; verticesCount < originalMesh.vertexCount; verticesCount+=4)
             {
+                
                 if (text.Length <= characterCount) break;
                 // Debug.Log(textMeshPro.text[characterCount]);
                 var initialVertices = new List<Vector3>();
@@ -136,6 +145,7 @@ namespace KineTypoSystem
                 }
                 
                 var child = new GameObject();
+                var cloneTextMesh = child.AddComponent<CloneTextMesh>();
                 child.name = text[characterCount].ToString();
                 var childMeshRenderer = child.AddComponent<MeshRenderer>();
                 var childMesh = new Mesh();
@@ -152,7 +162,18 @@ namespace KineTypoSystem
                 childMeshRenderer.sharedMaterial = new Material(textMeshPro.fontSharedMaterial);
                 childMeshRenderer.sharedMaterial.CopyPropertiesFromMaterial(textMeshPro.fontSharedMaterial);
 
-                clones.Add(child);
+
+                // cloneTextMesh.width = initialVertices.Last().x-initialVertices.First().x;
+                // cloneTextMesh.height = initialVertices[1].y-initialVertices.First().y;
+
+                // Debug.Log( cloneTextMesh.width );
+                cloneTextMesh.rect = new Rect(
+                    (initialVertices.First().x + initialVertices.Last().x)/2,
+                    (initialVertices[1].y + initialVertices.First().y)/2,
+                    initialVertices.Last().x-initialVertices.First().x,
+                    initialVertices[1].y-initialVertices.First().y
+                );
+                clones.Add(cloneTextMesh);
                 characterCount++;
 
             }
@@ -161,7 +182,15 @@ namespace KineTypoSystem
             return clones;
 
         }
-        public static TextMeshPro CreateTextMesh(string character, TMP_FontAsset font, float fontSize,TextAlignmentOptions textAlignmentOptions, FontStyles fontStyle = FontStyles.Normal)
+        public static TextMeshPro CreateTextMesh(
+            Transform parent,
+            string character, 
+            TMP_FontAsset font, 
+            float fontSize,TextAlignmentOptions textAlignmentOptions, 
+            FontStyles fontStyle = FontStyles.Normal, 
+            float characterSpacing = 0f,
+            float lineSpacing = 0f
+            )
         {
             var tmPro = new GameObject().AddComponent<TextMeshPro>();
             tmPro.font = font;
@@ -171,11 +200,18 @@ namespace KineTypoSystem
             tmPro.fontStyle = fontStyle;
             tmPro.enableWordWrapping = false;
             tmPro.name = character;
+            tmPro.characterSpacing = characterSpacing;
+            tmPro.lineSpacing = lineSpacing;
             tmPro.transform.localEulerAngles = Vector3.zero;
             tmPro.transform.localPosition = Vector3.zero;
             tmPro.transform.localScale = Vector3.one;
+            
             tmPro.UpdateFontAsset();
             tmPro.ForceMeshUpdate();
+            tmPro.transform.position = parent.position;
+            tmPro.transform.localScale = parent.localScale;
+            tmPro.transform.eulerAngles = parent.eulerAngles;
+
             // Debug.Log(tmPro.meshFilter.sharedMesh.vertices.Length);
             return tmPro;
         }
