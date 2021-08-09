@@ -9,6 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace KineTypoSystem
 {
+    [RequireComponent(typeof(AnimationClipTransfer))]
     public class KineTypoStaggerElement : MonoBehaviour
     {
 
@@ -25,7 +26,7 @@ namespace KineTypoSystem
         [SerializeField] private List<CloneTextMesh> cloneTextMesh;
         [SerializeField] private TextAlignmentOptions textAlignmentOptions;
         [SerializeField] private Rect _rect = new Rect();
-
+        private Animation _animation;
 
         public Rect rect => _rect;
         public string Text
@@ -34,12 +35,19 @@ namespace KineTypoSystem
             set => text = value;
         }
 
+        public void SetAnimationClip(AnimationClip animationClip)
+        {
+            this.animationClip = animationClip;
+            animationClipTransfer.AnimationClip = animationClip;
+        }
+        
+
         // Start is called before the first frame update
         void Start() { }
         private void InitAnimationComponents(AnimationClip animationClip)
         {
-            var transfer = GetComponent<AnimationClipTransfer>();
-            if (transfer == null)
+            // var transfer = GetComponent<AnimationClipTransfer>();
+            if (animationClipTransfer == null)
             {
                 animationClipTransfer = gameObject.AddComponent<AnimationClipTransfer>();
             }
@@ -100,19 +108,20 @@ namespace KineTypoSystem
                     textMeshPro.gameObject.layer = gameObject.layer;
                 }
             }
-            
-            InitAnimationComponents(animationClip);
-            
-            animationClipTransfer.Init();
-            
+
             foreach (var clone in cloneTextMesh)
             {
                 clone.transform.SetParent(transform,false);
                 var textVertexMorpher = clone.gameObject.AddComponent<TextMeshVertexMorpher>();
-                animationClipTransfer.OnInitHandler += textVertexMorpher.Init;
+                textVertexMorpher.Init();
+                // animationClipTransfer.OnInitHandler += textVertexMorpher.Init;
                 animationClipTransfer.OnResetChildTransformHandler += textVertexMorpher.Reset;
 
             }
+            InitAnimationComponents(animationClip);
+            animationClipTransfer.Init();
+
+          
         }
 
         public void UpdateFontAsset()
@@ -139,13 +148,23 @@ namespace KineTypoSystem
         public void Play(string newText)
         {
             GenerateText(newText);
-            GetComponent<Animation>().Play();
+            Play();
+        }
+        
+        public void Play()
+        {
+            if(_animation == null)_animation = GetComponent<Animation>();
+            if (_animation != null)
+            {
+                _animation.Stop();
+                _animation.Play();
+            }
         }
 
         public void Regenerate()
         {
             if(text.Length == 0 || animationClip == null || tmpFontAsset == null) return;
-            DestroyImmediate(animationClipTransfer);
+            // DestroyImmediate(animationClipTransfer);
             foreach (var t in textMeshPros)
             {
                 if(t != null)DestroyImmediate(t.gameObject);
@@ -164,9 +183,7 @@ namespace KineTypoSystem
             profile.fontAsset = tmpFontAsset;
             profile.fontSize = 12;
             
-            
             Init(text, tmpFontAsset,animationClip);
-
 
         }
         // Update is called once per frame

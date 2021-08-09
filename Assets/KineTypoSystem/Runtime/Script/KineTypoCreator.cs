@@ -160,7 +160,7 @@ namespace KineTypoSystem
                 meshFilter.sharedMesh = childMesh;
                 // Debug.Log(childMeshRenderer);
                 childMeshRenderer.sharedMaterial = new Material(textMeshPro.fontSharedMaterial);
-                childMeshRenderer.sharedMaterial.CopyPropertiesFromMaterial(textMeshPro.fontSharedMaterial);
+                // childMeshRenderer.sharedMaterial.CopyPropertiesFromMaterial(textMeshPro.fontSharedMaterial);
 
 
                 // cloneTextMesh.width = initialVertices.Last().x-initialVertices.First().x;
