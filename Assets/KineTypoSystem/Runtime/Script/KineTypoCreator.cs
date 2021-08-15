@@ -115,7 +115,7 @@ namespace KineTypoSystem
             var textMeshPro = CreateTextMesh(parent,text,fontAsset,fontSize,textAlignmentOptions, fontStyle,characterSpacing,lineSpacing);
             var clones = new List<CloneTextMesh>();
             
-            Debug.Log(textMeshPro.text);
+            // Debug.Log(textMeshPro.text);
             var characterCount = 0;
             // var count = 0;
             var originalMesh = textMeshPro.meshFilter.sharedMesh;

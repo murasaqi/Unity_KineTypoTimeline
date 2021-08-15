@@ -28,6 +28,13 @@ namespace KineTypoSystem
         [SerializeField] private Rect _rect = new Rect();
         private Animation _animation;
 
+        
+        // public AnimationClipTransfer 
+
+        public void ProcessFrame(float progress)
+        {
+            animationClipTransfer.ProcessFrame(progress);
+        }
         public Rect rect => _rect;
         public string Text
         {
@@ -145,9 +152,23 @@ namespace KineTypoSystem
             Regenerate();
         }
 
+        public void Play(string newText, AnimationClip animationClip)
+        {
+            SetAnimationClip(animationClip);
+            GenerateText(newText);
+            Play();
+        }
+        
         public void Play(string newText)
         {
+            SetAnimationClip(animationClip);
             GenerateText(newText);
+            Play();
+        }
+        
+        public void Play(AnimationClip animationClip)
+        {
+            SetAnimationClip(animationClip);
             Play();
         }
         
@@ -182,7 +203,6 @@ namespace KineTypoSystem
             profile.animationClip = animationClip;
             profile.fontAsset = tmpFontAsset;
             profile.fontSize = 12;
-            
             Init(text, tmpFontAsset,animationClip);
 
         }
