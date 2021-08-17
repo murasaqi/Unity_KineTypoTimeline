@@ -28,6 +28,7 @@ public class TextMeshVertexMorpher : MonoBehaviour
     [SerializeField,HideInInspector] private List<Vector3> vertices = new List<Vector3>();
     [SerializeField,HideInInspector] private List<Vector3> initialVertices = new List<Vector3>();
 
+    private Material _material;
     void Start()
     {
         Init();
@@ -36,8 +37,8 @@ public class TextMeshVertexMorpher : MonoBehaviour
     public void Init()
     {
         mesh = GetComponent<MeshFilter>().sharedMesh;
-        
-        
+
+        _material = GetComponent<MeshRenderer>().sharedMaterial;
         // var count = 0;
         vertices.Clear();
         initialVertices.Clear();
@@ -53,7 +54,7 @@ public class TextMeshVertexMorpher : MonoBehaviour
     {
         if(mesh != null)mesh.SetVertices(initialVertices);
     }
-
+    
     private void OnDestroy()
     {
         Reset();
@@ -94,4 +95,5 @@ public class TextMeshVertexMorpher : MonoBehaviour
             mesh.SetVertices(vertices);
         }
     }
+    
 }

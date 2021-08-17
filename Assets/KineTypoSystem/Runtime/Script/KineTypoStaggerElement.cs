@@ -23,6 +23,7 @@ namespace KineTypoSystem
         [HideInInspector] [SerializeField] private TextMaterialType textMaterialType = TextMaterialType.SDFTexture;
         [HideInInspector] [SerializeField] private AnimationClipTransfer animationClipTransfer;
         [SerializeField] private List<TextMeshPro> textMeshPros;
+        private List<Material> _textMaterials = new List<Material>();
         [SerializeField] private List<CloneTextMesh> cloneTextMesh;
         [SerializeField] private TextAlignmentOptions textAlignmentOptions;
         [SerializeField] private Rect _rect = new Rect();
@@ -69,6 +70,7 @@ namespace KineTypoSystem
         {
             cloneTextMesh = new List<CloneTextMesh>();
             textMeshPros = new List<TextMeshPro>();
+            _textMaterials.Clear();
             this.tmpFontAsset = tmpFontAsset;
             this.text = text;
             
@@ -81,6 +83,8 @@ namespace KineTypoSystem
                 var lastY = 0f;
                 foreach (var clone in cloneTextMesh)
                 {
+                    
+                    _textMaterials.Add(clone.GetComponent<MeshRenderer>().sharedMaterial);
                     clone.transform.SetParent(transform,false);
                     clone.gameObject.layer = gameObject.layer;
 
@@ -185,6 +189,12 @@ namespace KineTypoSystem
         public void Regenerate()
         {
             if(text.Length == 0 || animationClip == null || tmpFontAsset == null) return;
+            
+            foreach (var t in _textMaterials)
+            {
+                if(t != null)DestroyImmediate(t);
+            }
+
             // DestroyImmediate(animationClipTransfer);
             foreach (var t in textMeshPros)
             {
@@ -195,6 +205,8 @@ namespace KineTypoSystem
             {
                 if(t != null)DestroyImmediate(t.gameObject);
             }
+            
+           
             textMeshPros.Clear();
             cloneTextMesh.Clear();
             gameObject.name = text;
