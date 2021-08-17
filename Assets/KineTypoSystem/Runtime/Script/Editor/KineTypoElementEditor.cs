@@ -7,7 +7,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace KineTypoSystem
-{ 
+{
+#if UNITY_EDITOR
+    
     [CustomEditor(typeof(KineTypoStaggerElement), true)]
     public class KineTypoElementEditor : Editor
     {
@@ -30,4 +32,6 @@ namespace KineTypoSystem
             return root;
         }
     }
+    
+#endif
 }
